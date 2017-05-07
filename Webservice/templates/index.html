@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Live view - {{ ip|safe }}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/thumbnail-gallery.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <!-- Temporary fix for navbar responsiveness -->
+    <style>
+        .navbar-toggler {
+            z-index: 1;
+        }
+
+        @media (max-width: 576px) {
+            nav > .container {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
+        <a class="navbar-brand" href="/">Ip Camera: {{ ip|safe }}</a>
+        <div class="collapse navbar-collapse" id="navbarExample">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Control <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/gallery">Gallery</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="row imgstream">
+        <div class="stream">
+            <img id="stream" src="{{ url|safe }}" width="704" height="576"
+                 alt="Press Reload if no image is displayed" border="0" style="cursor: crosshair;">
+        </div>
+        <div class="sliders">
+            <div class="slider_pan">
+                <a href="{{ url|safe }}&move=left&move=1"><img src="{{ url_for('static', filename='images/left.png') }}"></a>
+                <p>Move</p>
+                <a href="{{ url|safe }}&move=right"><img src="{{ url_for('static', filename='images/right.png') }}"></a>
+            </div>
+            <div class="slider_zoom">
+                <a href="{{ url|safe }}&rzoom=-1000"><img src="{{ url_for('static', filename='images/remove.png') }}"></a>
+                <p>Zoom</p>
+                <a href="{{ url|safe }}&rzoom=+1000"><img src="{{ url_for('static', filename='images/add.png') }}"></a>
+            </div>
+            <div class="slider_focus">
+                <a href="{{ url|safe }}&rfocus=-2500"><img src="{{ url_for('static', filename='images/remove.png') }}"></a>
+                <p>Focus</p>
+                <a href="{{ url|safe }}&rfocus=-2500"><img src="{{ url_for('static', filename='images/add.png') }}"></a>
+            </div>
+            <div class="slider_tilt">
+                <a href="{{ url|safe }}&move=down"><img src="{{ url_for('static', filename='images/down.png') }}"></a>
+                <p>Till</p>
+                <a href="{{ url|safe }}&move=up"><img src="{{ url_for('static', filename='images/up.png') }}"></a>
+            </div>
+
+            <div class="acces buttons">
+                <a href="/accept" type="button" class="btn btn-success btn-md">Accept Acces</a>
+                <a href="/denied" type="button" class="btn btn-danger btn-md">Deny Acces</a>
+            </div>
+            <div class="picture buttons">
+                <a href="/picture">Take Picture</a>
+            </div>
+
+            <div class="home">
+                <a href="{{ url|safe }}&move=home"><img src="{{ url_for('static', filename='images/door.png') }}"></a>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="row">
+
+    </div>
+</div>
+
+
+<!-- jQuery Version 3.1.1 -->
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<!-- Tether -->
+<script src="{{ url_for('static', filename='js/tether.min.js') }}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+</body>
+
+</html>

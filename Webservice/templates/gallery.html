@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Gallery - {{ ip|safe }}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/thumbnail-gallery.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <!-- Temporary fix for navbar responsiveness -->
+    <style>
+        .navbar-toggler {
+            z-index: 1;
+        }
+
+        @media (max-width: 576px) {
+            nav > .container {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
+        <a class="navbar-brand" href="/">Ip Camera: {{ ip|safe }}</a>
+        <div class="collapse navbar-collapse" id="navbarExample">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Control <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/gallery">Gallery</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+    <div class="container">
+
+        <h1 class="my-4 text-center text-lg-left"> Gallery</h1>
+
+        <div class="row text-center text-lg-left">
+
+                {% for img in images %}
+                <div class="responsive">
+                    <div class="gallery">
+                        
+                        <a href="{{ url_for('static', filename = 'images/ipcam/' + img) }}" class="swipebox"><img src="{{ url_for('static', filename = 'images/ipcam/' + img) }}"  height="200"></a>
+                        
+                    </div>
+                </div>
+                
+                {% endfor %}
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+
+<!-- jQuery Version 3.1.1 -->
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<!-- Tether -->
+<script src="{{ url_for('static', filename='js/tether.min.js') }}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+</body>
+
+</html>

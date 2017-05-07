@@ -1,0 +1,42 @@
+.sliders {
+    display: block;
+    width: 36.5%;
+    background-color: #292b2c;
+    padding: 20px;
+
+}
+
+.imgstream {
+    width: 100%;
+    margin-top: 50px;
+    text-align: center;
+}
+
+a {
+    text-decoration: none !important;
+    color: white;
+}
+
+.slider_focus, .slider_pan, .slider_tilt, .slider_zoom {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons{
+    display: flex;
+    justify-content: space-around;
+}
+.buttons a{
+    margin: 10px
+}
+
+.home{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    height: 70%;
+}
+
+p {
+    color: white !important;
+}
