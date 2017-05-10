@@ -393,7 +393,7 @@ if __name__ == "__main__":
         'door_open': False,
         'waiting_response': False,
         'override_controls': False,
-        'auto_pictures':True
+        'auto_pictures':False
         }
 
     
