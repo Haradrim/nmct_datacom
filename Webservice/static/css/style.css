@@ -1,15 +1,25 @@
 .sliders {
-    display: block;
+    display: flex;
     width: 36.5%;
     background-color: #292b2c;
     padding: 20px;
-
+    flex-direction: column;
 }
 
 .imgstream {
     width: 100%;
     margin-top: 50px;
     text-align: center;
+}
+
+.autopictures label{
+    color: white;
+}
+.on.False{
+    color: grey;
+}
+.off.True{
+    color: grey;
 }
 
 a {
@@ -25,6 +35,7 @@ a {
 .buttons{
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 .buttons a{
     margin: 10px
@@ -33,8 +44,7 @@ a {
 .home{
     display: flex;
     justify-content: flex-end;
-    align-items: flex-end;
-    height: 70%;
+    margin-top: auto;
 }
 
 p {

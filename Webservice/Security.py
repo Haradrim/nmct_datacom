@@ -19,7 +19,6 @@ from flask import Flask, render_template, redirect, request, Response
 app = Flask(__name__)
 
 # ip cam
-cam_adres = "88.53.197.250/axis-cgi/mjpg/video.cgi?resolution=320x240"
 #Datacom 172.23.49.1/axis-cgi/com/ptz.cgi
 #Italie 88.53.197.250/axis-cgi/mjpg/video.cgi?resolution=320x240
 #GoPro 10.5.5.9:8080/live/amba.m3u8
@@ -96,10 +95,12 @@ def requires_auth(a):
 def index():
     splitted = cam_adres.split("/")
     ip = splitted[0]
+    auto = str(security_status['auto_pictures'])
     return render_template(
         'index.html',
         url = cam_no_cred,
-        ip = ip
+        ip = ip,
+        auto = auto
         )
 
 @app.route('/accept')
@@ -109,6 +110,7 @@ def accept(message = 'Please Enter'):
     security_status['current_status'] = message
     security_status['door_open'] = True
     security_status['waiting_response'] = False
+    GPIO.output(led_pin,True)
     return redirect('/')
 
 @app.route('/denied')
@@ -119,6 +121,15 @@ def denied(message = 'Acces Denied'):
     security_status['waiting_response'] = False
     return redirect('/')
 
+@app.route('/auto')
+@app.route('/auto/<status>')
+def auto_pictures(status = 'on'):
+    if status == 'on':
+        security_status['auto_pictures'] = True
+    if status == 'off':
+        security_status['auto_pictures'] = False
+    return redirect('/')
+    
 @app.route('/picture')
 def picture():
     security_status['take_picture'] = True
@@ -139,14 +150,26 @@ def gallery():
 
 def web_service():
     app.run(host= '0.0.0.0')
-    
 
 
-def exec_command(command):
+def move_scan():
+    resp = None
     try:
-        requests.get("{0}&{1}".format(cam_url,command),timeout = 2)
+        resp = requests.get('http://172.23.49.1/axis-cgi/com/ptz.cgi?camera=1&continuouspantiltmove=10,0', auth=(user,passw),timeout=5)
+        print(resp.ok)
+        print(resp.status_code)
     except requests.exceptions.RequestException as e:
-        print 'Could not connect login might be incorrect:'
+        print 'Oops!: Something went wrong sending the request.'
+        print e
+
+def move_home():
+    resp = None
+    try:
+        resp = requests.get('http://172.23.49.1/axis-cgi/com/ptz.cgi?camera=1&move=home', auth=(user,passw),timeout=5)
+        print(resp.ok)
+        print(resp.status_code)
+    except requests.exceptions.RequestException as e:
+        print 'Oops!: Something went wrong sending the request.'
         print e
 
 def main_logic():
@@ -159,28 +182,26 @@ def main_logic():
                 update_status('Scanning')
                 security_status['scanning'] = True
                 print 'Command start scanning'
-                exec_command("continuouspantiltmove=10,0")
+                move_scan()
 
         if security_status['doorbell_pressed'] == True:
-             update_status('Welcome')
+             update_status('Please Wait')
              security_status['scanning'] = False
              security_status['doorbell_pressed'] = False 
              security_status['waiting_response'] = True
              print 'Command go to home'
-             exec_command("move=home")
+             move_home()
              i = 0
              while  security_status['waiting_response']:
-                if security_status['door_open'] == True:
-                    break
                 time.sleep(1)
                 i += 1
                 if i == 10:
                     break
 
-        if security_status['door_open'] == True:
-            GPIO.output(led_pin,True)
-            time.sleep(10)
+        if security_status['door_open'] == True:            
+            time.sleep(5)
             GPIO.output(led_pin,False)
+            security_status['current_status'] = 'Welcome'
             security_status['door_open'] = False
 
         if security_status['current_status'] != 'Scanning' and security_status['door_open'] == False:
@@ -264,6 +285,7 @@ class lcd:
 
 
 def button_pressed(channel):
+    print "Doorbell pressed"
     security_status['doorbell_pressed'] = True
 
 def update_status(status):
@@ -311,7 +333,7 @@ def video_monitor():
                         print 'Picture taken'
                     for (x, y, w, h) in rects:
                     
-                            if security_status['person_detected'] == False:
+                            if security_status['person_detected'] == False and security_status['auto_pictures'] == True:
                                 filename = image_path + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%d%m-%H%M%S')+".jpeg"
                                 cv2.imwrite(filename,frame)
                                 print 'Picture taken'
@@ -352,7 +374,7 @@ if __name__ == "__main__":
     # GPIO init
     GPIO.setmode(GPIO.BCM)
     
-    # GPIO button init
+    # GPIO button/led init
     GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(led_pin, GPIO.OUT)
     GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=button_pressed, bouncetime=1000)
@@ -369,7 +391,8 @@ if __name__ == "__main__":
         'init': False,
         'door_open': False,
         'waiting_response': False,
-        'override_controls': False
+        'override_controls': False,
+        'auto_pictures':True
         }
 
     
@@ -396,7 +419,7 @@ if __name__ == "__main__":
     passw = getpass.getpass("Password for " + user + ":")
     cam_url = "http://{0}:{1}@{2}?camera={3}".format(str(user),str(passw),cam_adres,str(camera))
     cam_no_cred = "http://{0}?camera={1}".format(cam_adres,str(camera))
-    exec_command("move=home")
+    move_home()
     
 
     security_status['init'] = True
