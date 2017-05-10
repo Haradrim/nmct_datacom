@@ -19,6 +19,7 @@ from flask import Flask, render_template, redirect, request, Response
 app = Flask(__name__)
 
 # ip cam
+cam_adres = "172.23.49.1/axis-cgi/com/ptz.cgi"
 #Datacom 172.23.49.1/axis-cgi/com/ptz.cgi
 #Italie 88.53.197.250/axis-cgi/mjpg/video.cgi?resolution=320x240
 #GoPro 10.5.5.9:8080/live/amba.m3u8
