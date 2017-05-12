@@ -303,7 +303,7 @@ def video_monitor():
 
     capture_isopen = False
     #GoPro stream 
-    capture = cv2.VideoCapture(cam_url)
+    capture = cv2.VideoCapture('http://student:knipknip@172.23.49.1/axis-cgi/mjpg/video.cgi?resolution=500x500?.mjpg')
     #IpCam stream
     #capture = cv2.VideoCapture('http://student:tasjekoffie@172.23.49.1/axis-cgi/com/ptz.cgi?camera=1&move=home')
     hog = cv2.HOGDescriptor()
@@ -328,14 +328,14 @@ def video_monitor():
                     ret, frame = capture.read()
                     (rects, weights) = hog.detectMultiScale(frame, winStride=win_stride,padding=padding, scale=scale, useMeanshiftGrouping=mean_shift)
                     if security_status['take_picture'] == True:
-                        filename = image_path + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%d%m-%H%M%S')+".jpeg"
+                        filename = image_path + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S')+".jpeg"
                         cv2.imwrite(filename,frame)
                         security_status['take_picture'] = False
                         print 'Picture taken'
                     for (x, y, w, h) in rects:
                     
                             if security_status['person_detected'] == False and security_status['auto_pictures'] == True:
-                                filename = image_path + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%d%m-%H%M%S')+".jpeg"
+                                filename = image_path + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S')+".jpeg"
                                 cv2.imwrite(filename,frame)
                                 print 'Picture taken'
                                 security_status['person_detected'] = True

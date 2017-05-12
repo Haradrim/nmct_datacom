@@ -63,7 +63,7 @@
 
         <div class="row text-center text-lg-left">
 
-                {% for img in images %}
+                {% for img in images|sort(reverse=true)  %}
                 <div class="responsive">
                     <div class="gallery">
                         
